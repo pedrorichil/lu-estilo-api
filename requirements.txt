@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+SQLAlchemy
+psycopg2-binary
+python-dotenv
+passlib[bcrypt]
+PyJWT
+alembic
+pydantic[email]
+httpx
+pytest
+sentry-sdk
+python-jose[cryptography]
