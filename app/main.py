@@ -7,8 +7,8 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Lu Estilo API")
 
-app.include_router(auth.router, prefix="/auth")
-app.include_router(clients.router, prefix="/clients")
-app.include_router(products.router, prefix="/products")
-app.include_router(orders.router, prefix="/orders")
-app.include_router(whatsapp.router, prefix="/whatsapp")
+app.include_router(auth.router)
+app.include_router(clients.router)
+app.include_router(products.router)
+app.include_router(orders.router)
+app.include_router(whatsapp.router)
