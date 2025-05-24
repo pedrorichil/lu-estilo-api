@@ -1,17 +1,16 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from app.services.whatsapp_service import send_whatsapp_message
+from app.services.whatsapp_service import whatsapp_service
 
 router = APIRouter()
 
 class WhatsAppMessage(BaseModel):
-    phone_number: str  # E.164 format, e.g., +5511999999999
+    phone: str
     message: str
 
 @router.post("/whatsapp/send")
-async def send_whatsapp(msg: WhatsAppMessage):
-    try:
-        response = await send_whatsapp_message(msg.phone_number, msg.message)
-        return {"msg": "Message sent", "response": response}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+def send_whatsapp_message(data: WhatsAppMessage):
+    result = whatsapp_service.send_message(data.phone, data.message)
+    if result["status"] == "error":
+        raise HTTPException(status_code=500, detail=result["detail"])
+    return result

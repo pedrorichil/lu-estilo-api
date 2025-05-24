@@ -1,26 +1,33 @@
-import httpx
 import os
-from dotenv import load_dotenv
+import requests
+from app.core.logger import logger
+from app.core.config import settings
 
-load_dotenv()
+class WhatsAppService:
+    def __init__(self):
+        self.token = settings.WHATSAPP_TOKEN
+        self.phone_number_id = settings.WHATSAPP_PHONE_NUMBER_ID
+        self.api_url = f"https://graph.facebook.com/v17.0/{self.phone_number_id}/messages"
+        self.headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Content-Type": "application/json"
+        }
 
-WHATSAPP_API_URL = os.getenv("WHATSAPP_API_URL")
-WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN")
+    def send_message(self, to: str, message: str):
+        payload = {
+            "messaging_product": "whatsapp",
+            "to": to,
+            "type": "text",
+            "text": {"body": message}
+        }
 
-async def send_whatsapp_message(to: str, message: str):
-    headers = {
-        "Authorization": f"Bearer {WHATSAPP_TOKEN}",
-        "Content-Type": "application/json"
-    }
+        try:
+            response = requests.post(self.api_url, json=payload, headers=self.headers)
+            response.raise_for_status()
+            logger.info(f"Mensagem enviada com sucesso para {to}")
+            return {"status": "success", "message_id": response.json().get("messages", [{}])[0].get("id")}
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Erro ao enviar mensagem para {to}: {e}")
+            return {"status": "error", "detail": str(e)}
 
-    payload = {
-        "messaging_product": "whatsapp",
-        "to": to,
-        "type": "text",
-        "text": {"body": message}
-    }
-
-    async with httpx.AsyncClient() as client:
-        response = await client.post(WHATSAPP_API_URL, headers=headers, json=payload)
-        response.raise_for_status()
-        return response.json()
+whatsapp_service = WhatsAppService()
