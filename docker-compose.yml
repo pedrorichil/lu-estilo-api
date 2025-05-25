@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: lu_estilo
+      POSTGRES_PASSWORD: lu_estilo
+      POSTGRES_DB: lu_estilo_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    container_name: lu_estilo_api
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://lu_estilo:lu_estilo@db:5432/lu_estilo_db
+      - WHATSAPP_TOKEN=seu_token
+      - WHATSAPP_PHONE_NUMBER_ID=seu_phone_number_id
+
+volumes:
+  postgres_data:
