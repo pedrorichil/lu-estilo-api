@@ -214,11 +214,3 @@ async def send_whatsapp_message(client_id: int, message: str, db: Session = Depe
     
     return {"status": "Mensagem enviada com sucesso"}
 ```
-
----
-
-Se quiser, posso também gerar **templates completos de código** com exemplos para cada camada (models, routers, serviços). Quer que eu faça isso? Se sim, para qual parte quer que eu comece?
-✅ **Autenticação**
-✅ **CRUD de Clientes**
-✅ **Integração WhatsApp**
-✅ **Outro** (especifique).
