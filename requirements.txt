@@ -11,3 +11,5 @@ httpx
 pytest
 sentry-sdk
 python-jose[cryptography]
+requests
+pydantic-settings
